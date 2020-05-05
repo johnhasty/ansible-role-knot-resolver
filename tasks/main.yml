@@ -1,0 +1,36 @@
+---
+
+- name: Ensure EPEL Repo Is Installed
+  package:
+    name: epel-release
+
+- name: Add KNot Resolver Repo
+  yum_repository:
+    name: knot-resolver-latest
+    description: Knot Resolver (Stable, Latest) (CentOS_7_EPEL)
+    baseurl: http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/CentOS_7_EPEL/
+
+- name: Install Knot Resolver
+  package:
+    name: knot-resolver
+
+- name: Manage Knot Resolver Config
+  template:
+    src: kresd.conf.j2
+    dest: /etc/knot-resolver/kresd.conf
+    owner: root
+    group: knot-resolver
+    mode: 0644
+  register: knot_config
+
+- name: Ensure Knot Resolver Service is Enabled
+  service:
+    name: kresd@1
+    enabled: yes
+    state: started
+
+- name: Restart Knot Resolver Service if Configuration Changed
+  service:
+    name: kresd@1
+    state: restarted
+  when: knot_config.changed
