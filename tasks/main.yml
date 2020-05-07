@@ -4,6 +4,11 @@
   package:
     name: epel-release
 
+- name: Check if in Docker
+  stat:
+    path: /.dockerenv
+  register: iscontainerfile
+
 - name: Add KNot Resolver Repo
   yum_repository:
     name: knot-resolver-latest
@@ -28,9 +33,10 @@
     name: kresd@1
     enabled: yes
     state: started
+  when: not iscontainerfile.stat.exists
 
 - name: Restart Knot Resolver Service if Configuration Changed
   service:
     name: kresd@1
     state: restarted
-  when: knot_config.changed
+  when: knot_config.changed and not iscontainerfile.stat.exists
