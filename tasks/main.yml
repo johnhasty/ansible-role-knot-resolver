@@ -13,6 +13,7 @@
   yum_repository:
     name: knot-resolver-latest
     description: Knot Resolver (Stable, Latest) (CentOS_7_EPEL)
+    gpgkey: http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/CentOS_7_EPEL/repodata/repomd.xml.key
     baseurl: http://download.opensuse.org/repositories/home:/CZ-NIC:/knot-resolver-latest/CentOS_7_EPEL/
 
 - name: Install Knot Resolver
